@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>GES772 Final Project</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<link href='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.css' rel='stylesheet' />
+<style>
+  body { margin:0; padding:0; }
+  #map { position:absolute; top:0; bottom:0; width:100%; }
+</style>
+</head>
+<body>
+
+
+<div id='map'></div>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1Ijoid2VibWFzdGVydW5rbm93biIsImEiOiJLNHhvUTNZIn0.EkdAYVUg-8XdxpB3_NKdjQ';
+var map = L.mapbox.map('map').setView([39.143206,-77.188034], 10);
+
+var MCBoundaryLayer = L.mapbox.featureLayer()
+	.addTo(map);
+	
+	//MCBoundaryLayer.loadURL('https://raw.githubusercontent.com/XunHu57/GES772FinalProject/branch1/Montgomery-County.geojson');
+
+//Create empty GeoJson layers and add them to the map:	
+var LayerZ = L.geoJson().addTo(map);
+var LayerH = L.geoJson().addTo(map);
+var LayerB = L.geoJson().addTo(map);
+var LayerM = L.geoJson().addTo(map);
+
+
+/* Geosever Initial Setup Instructions:
+
+1. Stop Geoserver
+
+2. Edit C:\Program Files (x86)\GeoServer 2.8.2\webapps\geoserver\WEB-INF\web.xml to enable JSONP
+
+3. Place the following shapefiles under C:\Program Files (x86)\GeoServer 2.8.2\data_dir\data:
+	All_HealthCare_Facilities*
+	BusStop*
+	metrostationsregional* (I renamed metro files to remove the "-" first)
+	(I also had to update metro and bus .prj file to match the same format as healthcare facilities)
+	
+4. Start Geoserver
+
+5. Create geoserver workspace called "ges772".  Make sure WFS is turned on.
+
+6. In workspace ges772, create 3 new data stores from the 3 shapefiles.
+	
+
+*/
+
+
+//Create WFS request variables. Note that the output format is text/javascript and the format options provide a callback functions:
+
+
+var geoJsonUrlHealth = "http://localhost:8080/geoserver/FinalProject772/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=FinalProject772:All_HealthCare_Facilities&outputFormat=text/javascript&format_options=callback:processJSONHealth";
+
+//NOTE maxFeatures are set to enable faster testing
+
+var geoJsonUrlBus = "http://localhost:8080/geoserver/FinalProject772/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=FinalProject772:BusStop&outputFormat=text/javascript&format_options=callback:processJSONBus&maxFeatures=1000";
+
+var geoJsonUrlMetro = "http://localhost:8080/geoserver/FinalProject772/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=FinalProject772:metro-stations-regional&outputFormat=text/javascript&format_options=callback:processJSONMetro";
+
+var geoJsonUrlZipcode = "http://localhost:8080/geoserver/FinalProject772/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=FinalProject772:Zipcode&outputFormat=text/javascript&format_options=callback:processJSONZipcode";
+
+//AJAX functions to perform asynchronous http requests from geoserver url:
+$.ajax(geoJsonUrlHealth,
+{ dataType: "jsonp" }
+).done(function ( data ) {
+});
+
+$.ajax(geoJsonUrlBus,
+{ dataType: "jsonp" }
+).done(function ( data ) {
+});
+
+$.ajax(geoJsonUrlMetro,
+{ dataType: "jsonp" }
+).done(function ( data ) {
+});
+
+$.ajax(geoJsonUrlZipcode,
+{ dataType: "jsonp" }
+).done(function ( data ) {
+});
+
+
+//functions to add geojson data to map:
+function processJSONHealth(HealthcareFacilitiesLayer) {
+ LayerH.addData(HealthcareFacilitiesLayer); 
+}
+
+function processJSONBus(BusStopLayer) {
+LayerB.addData(BusStopLayer); 
+}
+
+
+function processJSONMetro(MeteroStationLayer) {
+LayerM.addData(MeteroStationLayer); 
+}
+
+function processJSONZipcode(ZipcodeLayer) {
+LayerZ.addData(ZipcodeLayer); 
+}
+		
+L.control.layers({
+    'Base Map': L.mapbox.tileLayer('mapbox.streets').addTo(map)
+}, {
+	//'Montgomery-County': MCBoundaryLayer,
+	'Montgomery-Zipcode': LayerZ,
+    'Healthcare Facilities': LayerH,
+	'Metro Stations': LayerM,
+    'Bus Stops': LayerB
+   
+}).addTo(map);
+
+
+
+</script>
+
+   
+
+
+</body>
+</html>
+
