@@ -5,10 +5,10 @@
 <title>GES772 Final Project</title>
 <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
-<script src='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.js'></script>
+<script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 
-<link href='https://api.mapbox.com/mapbox.js/v2.3.0/mapbox.css' rel='stylesheet' />
+<link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
 
 
 <style>
@@ -31,8 +31,8 @@
   z-index:100;
   text-align:center;
   padding:10px;
-  border:1px solid rgba(0,0,0,0.4);
-  border-radius:3px;
+  border:1px solid rgba(0,0,0,0.8);
+  border-radius:9px;
   }
   .ui-button:hover {
     background:#3074a4;
@@ -168,6 +168,9 @@ L.control.layers({
 //setting current location
 var geolocate = document.getElementById('geolocate');
 
+var myLayer = L.mapbox.featureLayer().addTo(map);
+
+
 if (!navigator.geolocation) {
     geolocate.innerHTML = 'Geolocation is not available';
 } else {
@@ -178,8 +181,7 @@ if (!navigator.geolocation) {
     };
 }
 
-// Once we've got a position, zoom and center the map
-// on it, and add a single marker.
+// Once we've got a position, zoom and center the map on it, and add a single marker.
 map.on('locationfound', function(e) {
     map.fitBounds(e.bounds);
 
