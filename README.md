@@ -9,3 +9,7 @@ update:
 4/29/2016
 update
 1. test11-wft.html: add a x-rays layer
+
+4/30/2016
+update
+1. test11-wft.html: add more layers
