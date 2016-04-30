@@ -7,8 +7,10 @@
 
 <script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="../src/styledLayerControl.js"></script>
 
 <link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
+<link rel="stylesheet" href="../css/styledLayerControl.css" />
 
 
 <style>
@@ -56,29 +58,16 @@ var MCBoundaryLayer = L.mapbox.featureLayer()
 //Create empty GeoJson layers and add them to the map:	
 var LayerZ = L.geoJson().addTo(map);
 var LayerH = L.geoJson().addTo(map);
+var LayerP = L.geoJson().addTo(map);
+var LayerF = L.geoJson().addTo(map);
+var LayerU = L.geoJson().addTo(map);
 var LayerX = L.geoJson().addTo(map);
+var LayerV = L.geoJson().addTo(map);
+var LayerR = L.geoJson().addTo(map);
 var LayerB = L.geoJson().addTo(map);
 var LayerM = L.geoJson().addTo(map);
 
-//create icons for each layers
-var icons = {
-	Healthicon: L.mapbox.marker.icon({
-		'marker-size': 'large',
-		'marker-symbol': 'hospital',
-		'marker-color': '#ff2a00'
-	}),
-	Busicon:	L.mapbox.marker.icon({
-		'marker-size': 'large',
-		'marker-symbol': 'bus',
-		'marker-color': '#0095b2'
-	}),
-	Metroicon:	L.mapbox.marker.icon({
-		'marker-size': 'large',
-		'marker-symbol': 'Metro',
-		'marker-color': '#00b276'
-	}),
-};
-	
+
 
 	
 /* Geosever Initial Setup Instructions:
@@ -107,7 +96,19 @@ var icons = {
 
 var geoJsonUrlHealth = "http://localhost:8080/geoserver/FinalProject772/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=FinalProject772:All_HealthCare_Facilities&outputFormat=text/javascript&format_options=callback:processJSONHealth";
 
+
+var geoJsonUrlHospital = "http://localhost:8080/geoserver/FinalProject772/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=FinalProject772:All_HealthCare_Facilities&Filter=<Filter><PropertyIsEqualTo><PropertyName>hospital</PropertyName><Literal>yes</Literal></PropertyIsEqualTo></Filter>&outputFormat=text/javascript&format_options=callback:processJSONHospital";
+
+var geoJsonUrlFamilycare = "http://localhost:8080/geoserver/FinalProject772/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=FinalProject772:All_HealthCare_Facilities&Filter=<Filter><PropertyIsEqualTo><PropertyName>familycare</PropertyName><Literal>yes</Literal></PropertyIsEqualTo></Filter>&outputFormat=text/javascript&format_options=callback:processJSONFamilycare"
+
+var geoJsonUrlUrgentcare = "http://localhost:8080/geoserver/FinalProject772/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=FinalProject772:All_HealthCare_Facilities&Filter=<Filter><PropertyIsEqualTo><PropertyName>urgentcare</PropertyName><Literal>yes</Literal></PropertyIsEqualTo></Filter>&outputFormat=text/javascript&format_options=callback:processJSONUrgentcare";
+
+
 var geoJsonUrlXrays = "http://localhost:8080/geoserver/FinalProject772/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=FinalProject772:All_HealthCare_Facilities&Filter=<Filter><PropertyIsEqualTo><PropertyName>x-rays</PropertyName><Literal>yes</Literal></PropertyIsEqualTo></Filter>&outputFormat=text/javascript&format_options=callback:processJSONXrays";
+
+var geoJsonUrlVaccinatio = "http://localhost:8080/geoserver/FinalProject772/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=FinalProject772:All_HealthCare_Facilities&Filter=<Filter><PropertyIsEqualTo><PropertyName>vaccinatio</PropertyName><Literal>yes</Literal></PropertyIsEqualTo></Filter>&outputFormat=text/javascript&format_options=callback:processJSONVaccinatio";
+
+var geoJsonUrlFractures = "http://localhost:8080/geoserver/FinalProject772/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=FinalProject772:All_HealthCare_Facilities&Filter=<Filter><PropertyIsEqualTo><PropertyName>Fractures</PropertyName><Literal>yes</Literal></PropertyIsEqualTo></Filter>&outputFormat=text/javascript&format_options=callback:processJSONFractures";
 
 //NOTE maxFeatures are set to enable faster testing
 
@@ -124,7 +125,33 @@ $.ajax(geoJsonUrlHealth,
 ).done(function ( data ) {
 });
 
+$.ajax(geoJsonUrlHospital,
+{ dataType: "jsonp" }
+).done(function ( data ) {
+});
+
+$.ajax(geoJsonUrlFamilycare,
+{ dataType: "jsonp" }
+).done(function ( data ) {
+});
+
+$.ajax(geoJsonUrlUrgentcare,
+{ dataType: "jsonp" }
+).done(function ( data ) {
+});
+
+
 $.ajax(geoJsonUrlXrays,
+{ dataType: "jsonp" }
+).done(function ( data ) {
+});
+
+$.ajax(geoJsonUrlVaccinatio,
+{ dataType: "jsonp" }
+).done(function ( data ) {
+});
+
+$.ajax(geoJsonUrlFractures,
 { dataType: "jsonp" }
 ).done(function ( data ) {
 });
@@ -151,8 +178,29 @@ function processJSONHealth(HealthcareFacilitiesLayer) {
  LayerH.addData(HealthcareFacilitiesLayer); 
 }
 
-function processJSONXrays(XLayer) {
- LayerX.addData(XLayer); 
+function processJSONHospital(HospitalLayer) {
+ LayerP.addData(HospitalLayer); 
+}
+
+function processJSONFamilycare(FamilycareLayer) {
+ LayerF.addData(FamilycareLayer); 
+}
+
+function processJSONUrgentcare(UrgentcareLayer) {
+ LayerU.addData(UrgentcareLayer); 
+}
+
+
+function processJSONXrays(XrayLayer) {
+ LayerX.addData(XrayLayer); 
+}
+
+function processJSONVaccinatio(VaccinatLayer) {
+ LayerV.addData(VaccinatLayer); 
+}
+
+function processJSONFractures(FracturesLayer) {
+ LayerR.addData(FracturesLayer); 
 }
 
 function processJSONBus(BusStopLayer) {
@@ -173,11 +221,20 @@ L.control.layers({
 }, {
 	'Montgomery-Zipcode': LayerZ,
 	'Healthcare Facilities': LayerH,
+	'Hospitals': LayerP,
+	'Familycares': LayerF,
+	'Urgentcares': LayerU,
     'X-rays': LayerX,
+	'Vaccination': LayerV,
+	'Fractures': LayerR,
 	'Metro Stations': LayerM,
     'Bus Stops': LayerB
    
 }).addTo(map);
+
+map.eachLayer(function (layer) {
+    map.removeLayer(layer);
+});
 
 //setting current location
 var geolocate = document.getElementById('geolocate');
@@ -225,3 +282,4 @@ map.on('locationfound', function(e) {
 
 </body>
 </html>
+
